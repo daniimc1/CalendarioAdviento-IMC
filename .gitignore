@@ -1,0 +1,9 @@
+# Datos privados: cada servidor tiene los suyos (ver los archivos *.ejemplo.php)
+bd/conexion.php
+includes/teams_config.php
+
+# Correo generado (se recrea con: php correo/generar_eml.php)
+correo/correo_navidad.eml
+
+# Configuración local de Claude Code
+.claude/

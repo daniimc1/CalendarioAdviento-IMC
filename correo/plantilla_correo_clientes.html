@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>IMC Toys · ¡Felices Fiestas!</title>
+<!--[if !mso]><!-->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!--<![endif]-->
+<!--
+  =====================================================================
+  PLANTILLA DE CORREO IMC TOYS · NAVIDAD (misma estética que el calendario)
+  - NO va a producción: es una plantilla para copiar en Outlook.
+  - Maquetada con <table> y estilos inline (Outlook clásico usa el motor de Word).
+  - Los textos entre [CORCHETES] (empresa destinataria, firma) se cambian antes de enviar.
+  - Preparada para COPIAR Y PEGAR en el Nuevo Outlook:
+      · Fondo: franjas de color sólido por todo el alto (24px arriba, 58 laterales de ~17px
+        con rowspan, pie y cierre de 16px) + linear-gradient de respaldo en navegadores y móviles.
+        Cada celda lateral lleva border-bottom de su mismo color (sin costuras al hacer zoom).
+      · Tarjeta de 540px: en el panel de lectura queda aire de color alrededor.
+      · Para ENVIARLO sin copiar/pegar: generar_eml.php crea correo_navidad.eml.
+      · El título es un <p> con color inline (Outlook pisaba el <h1> a negro).
+      · Tarjeta sin borde: el banner (540x216) toca el degradado sin marco blanco.
+        Esquinas superiores rectas y solo las inferiores redondeadas (20px);
+        la celda que la envuelve es transparente (sin picos de color en las esquinas).
+  - Imágenes: banner-navidad.gif y logo-imc.png deben estar en la MISMA carpeta
+    que este archivo al abrirlo en el navegador.
+
+  CÓMO PASARLO A OUTLOOK
+  1. Abre este archivo en Chrome o Edge (doble clic).
+  2. Ctrl+A (seleccionar todo) y Ctrl+C (copiar).
+  3. En Outlook: Correo nuevo -> clic en el cuerpo -> Ctrl+V.
+     Las imágenes se incrustan en el correo automáticamente.
+  =====================================================================
+-->
+<!--[if mso]>
+<xml>
+  <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+</xml>
+<style type="text/css">
+  /* Outlook clásico no conoce Montserrat: usa Arial en todo */
+  body, table, td, a, p, span { font-family: Arial, Helvetica, sans-serif !important; }
+</style>
+<![endif]-->
+<style type="text/css">
+  /* Solo para clientes que leen <style>. Al pegar en Outlook se pierde, por eso
+     todo lo importante está también inline en cada etiqueta. */
+  body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+  img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+  table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  a.boton-rojo:hover { background-color: #B30015 !important; }
+  @media screen and (max-width: 620px) {
+    /* El marco de color se mantiene siempre (nunca padding 0) */
+    /* Las columnas laterales de franjas se quedan en 16px: el marco nunca desaparece */
+    .lateral { width: 16px !important; min-width: 16px !important; }
+    .centro { width: 100% !important; max-width: 540px !important; }
+    .tarjeta { width: 100% !important; max-width: 540px !important; }
+    .banner { width: 100% !important; height: auto !important; }
+    /* Menos relleno lateral: las 4 casillas caben holgadas */
+    .relleno { padding-left: 18px !important; padding-right: 18px !important; }
+    .titulo { font-size: 24px !important; line-height: 30px !important; }
+    .casilla { padding: 12px 2px !important; }
+    .casilla span { font-size: 11px !important; }
+  }
+</style>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f961c9;">
+
+<!-- Texto de vista previa (lo que se lee junto al asunto en la bandeja de entrada) -->
+<div style="display:none; font-size:1px; color:#f18bd0; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; mso-hide:all;">
+  IMC Toys te desea una feliz Navidad llena de juego, ilusión y momentos en familia.
+</div>
+
+<!-- FONDO EXTERIOR: degradado de la web (#6ec6ff -> #f18bd0 -> #f961c9) con FRANJAS de color
+     sólido (bgcolor) repartidas por TODO el alto del correo:
+     - Margen superior: 1 fila sólida de 24px (colspan="3").
+     - Bloque central: 58 filas; las celdas laterales (mín. 16px, sin ancho fijo: se reparten
+       el espacio por igual) llevan una franja cada una y la tarjeta va en la celda central
+       con rowspan="58" (= número exacto de <tr> laterales).
+     - Pie + 1 fila de cierre de 16px en #f961c9 (sin bloque vacío debajo).
+     Celdas de relleno con border:0 / font-size:1px / line-height:1px / padding:0: sin costuras.
+     Respaldo: linear-gradient CSS en el <div> y la tabla (sin color sólido en el <div>). -->
+<div style="background-image:linear-gradient(135deg, #6ec6ff 0%, #f18bd0 50%, #f961c9 100%); margin:0; padding:0;">
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f18bd0" style="width:100%; max-width:100%; margin:0; border-collapse:collapse; border-spacing:0; background-color:#f18bd0; background-image:linear-gradient(135deg, #6ec6ff 0%, #f18bd0 50%, #f961c9 100%);">
+  <!-- Margen superior: una sola fila sólida de 24px -->
+  <tr><td colspan="3" bgcolor="#6ec6ff" height="24" style="background-color:#6ec6ff; height:24px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly;">&nbsp;</td></tr>
+  <!-- Bloque central: 58 franjas laterales + tarjeta (rowspan="58") -->
+  <tr>
+    <td class="lateral" bgcolor="#72c4fd" height="17" style="min-width:16px; background-color:#72c4fd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #72c4fd;">&nbsp;</td>
+    <td class="centro" rowspan="58" width="540" valign="top" style="width:540px; max-width:540px; vertical-align:top; padding:0; background-color:transparent !important;">
+      <!-- ============ TARJETA (banner + contenido) con borde sutil ============ -->
+      <table role="presentation" class="tarjeta" width="540" align="center" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff"
+             style="width:540px; max-width:540px; background-color:#ffffff; border:0; border-collapse:separate; border-radius:0 0 20px 20px;">
+
+        <!-- CABECERA: BANNER GIF ANIMADO (540x216, a sangre: rectangular, sin esquinas redondeadas)
+             Outlook 2007-2016 muestra solo el primer fotograma (diseñado para verse completo).
+             Esquinas superiores RECTAS en la tarjeta y en la imagen: el GIF no tiene transparencia
+             alfa y un recorte redondeado dejaría "picos" de color sobre el fondo.
+             540px: la tarjeta no lleva borde, así que el GIF ocupa todo el ancho sin marco blanco. -->
+        <tr>
+          <td align="center" style="padding:0; border:0; background-color:transparent; font-size:0; line-height:0;">
+            <img class="banner" src="banner-navidad.gif" width="540" height="216"
+                 alt="¡Felices Fiestas! IMC Toys · Navidad 2026"
+                 style="display:block; width:540px; max-width:100%; height:auto; border:0; outline:none;">
+          </td>
+        </tr>
+
+        <!-- TÍTULO Y SALUDO
+             El título es un <p> (no <h1>) con su color inline: Outlook lo respeta al pegar. -->
+        <tr>
+          <td class="relleno" align="left" bgcolor="#ffffff" style="background-color:#ffffff; padding:34px 32px 10px 32px;">
+            <p class="titulo" style="margin:0 0 6px 0; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:28px; line-height:34px; font-weight:800; color:#0055A5; mso-line-height-rule:exactly;">
+              <span style="color:#0055A5; font-weight:800;">¡Feliz Navidad de parte de IMC Toys!</span>
+            </p>
+            <p style="margin:0 0 22px 0; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; color:#666666; mso-line-height-rule:exactly;">
+              Gracias por jugar con nosotros un año más
+            </p>
+
+            <p style="margin:0 0 16px 0; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333; mso-line-height-rule:exactly;">
+              Hola, equipo de [Nombre de la empresa]:
+            </p>
+            <p style="margin:0 0 16px 0; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333; mso-line-height-rule:exactly;">
+              Llega la época más mágica del año y desde IMC Toys queremos daros las gracias por
+              la confianza y por todos los proyectos compartidos con [Nombre de la empresa] durante este 2026. Cada juguete que
+              creamos nace con una idea muy sencilla: sacar sonrisas y crear recuerdos en familia.
+            </p>
+            <p style="margin:0 0 16px 0; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333; mso-line-height-rule:exactly;">
+              Os deseamos unas fiestas llenas de juego, ilusión y cariño, y un 2027 cargado de
+              nuevas aventuras con Bebés Llorones, VIP Pets y todos nuestros amigos.
+            </p>
+          </td>
+        </tr>
+
+        <!-- 4 CASILLAS DE COLORES (los bloques del calendario)
+             Color sólido (bgcolor): se mantiene igual al pegar en Outlook.
+             border-collapse:separate es necesario para el redondeo y los huecos. -->
+        <tr>
+          <td class="relleno" bgcolor="#ffffff" style="background-color:#ffffff; padding:6px 32px 18px 32px;">
+            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:separate;">
+              <tr>
+                <td class="casilla" width="22%" align="center" valign="middle" bgcolor="#0055A5"
+                    style="background-color:#0055A5; border:3px solid #003a75; border-radius:14px; padding:16px 6px; font-family:Montserrat, Arial, Helvetica, sans-serif; color:#ffffff;">
+                  <span style="font-size:24px; line-height:28px; font-weight:800; color:#ffffff;">&#10052;</span><br>
+                  <span style="font-size:12px; line-height:18px; font-weight:700; color:#ffffff;">Ilusión</span>
+                </td>
+                <td width="4%" style="font-size:0; line-height:0;">&nbsp;</td>
+                <td class="casilla" width="22%" align="center" valign="middle" bgcolor="#E3001B"
+                    style="background-color:#E3001B; border:3px solid #9e0016; border-radius:14px; padding:16px 6px; font-family:Montserrat, Arial, Helvetica, sans-serif; color:#ffffff;">
+                  <span style="font-size:24px; line-height:28px; font-weight:800; color:#ffffff;">&#127873;</span><br>
+                  <span style="font-size:12px; line-height:18px; font-weight:700; color:#ffffff;">Regalos</span>
+                </td>
+                <td width="4%" style="font-size:0; line-height:0;">&nbsp;</td>
+                <td class="casilla" width="22%" align="center" valign="middle" bgcolor="#FF9E1B"
+                    style="background-color:#FF9E1B; border:3px solid #c46d00; border-radius:14px; padding:16px 6px; font-family:Montserrat, Arial, Helvetica, sans-serif; color:#ffffff;">
+                  <span style="font-size:24px; line-height:28px; font-weight:800; color:#ffffff;">&#11088;</span><br>
+                  <span style="font-size:12px; line-height:18px; font-weight:700; color:#ffffff;">Juego</span>
+                </td>
+                <td width="4%" style="font-size:0; line-height:0;">&nbsp;</td>
+                <td class="casilla" width="22%" align="center" valign="middle" bgcolor="#24D024"
+                    style="background-color:#24D024; border:3px solid #178f17; border-radius:14px; padding:16px 6px; font-family:Montserrat, Arial, Helvetica, sans-serif; color:#ffffff;">
+                  <span style="font-size:24px; line-height:28px; font-weight:800; color:#ffffff;">&#127876;</span><br>
+                  <span style="font-size:12px; line-height:18px; font-weight:700; color:#ffffff;">Familia</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- AVISO DORADO (como el lazo / destellos dorados) -->
+        <tr>
+          <td class="relleno" bgcolor="#ffffff" style="background-color:#ffffff; padding:4px 32px 22px 32px;">
+            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:separate;">
+              <tr>
+                <td bgcolor="#fff6d6" style="background-color:#fff6d6; border:1px solid #e8a400; border-radius:12px; padding:14px 18px; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:14px; line-height:21px; color:#8a5a00;">
+                  <strong style="color:#a86f00;">&#10024; Muy pronto:</strong>
+                  <span style="color:#8a5a00;">en 2027 llegan muchas novedades. ¡Seguid atentos a nuestra web
+                  para descubrirlas antes que nadie!</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- BOTÓN (rojo IMC, como "Entrar al calendario") -->
+        <tr>
+          <td class="relleno" align="center" bgcolor="#ffffff" style="background-color:#ffffff; padding:6px 32px 30px 32px;">
+            <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" style="border-collapse:separate;">
+              <tr>
+                <td align="center" bgcolor="#E3001B" style="background-color:#E3001B; border-radius:8px; mso-padding-alt:14px 34px;">
+                  <a class="boton-rojo" href="https://www.imctoys.com" target="_blank"
+                     style="display:inline-block; padding:14px 34px; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:16px; line-height:20px; font-weight:600; color:#ffffff; text-decoration:none; background-color:#E3001B; border-radius:8px; mso-padding-alt:0;">
+                    <span style="color:#ffffff;">Descubre nuestros juguetes</span>
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- FIRMA -->
+        <tr>
+          <td class="relleno" bgcolor="#ffffff" style="background-color:#ffffff; padding:0 32px 30px 32px; border-radius:0 0 20px 20px;">
+            <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td style="border-top:1px solid #ece6f6; padding-top:20px;">
+                  <table role="presentation" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td valign="middle" style="padding-right:14px;">
+                        <img src="logo-imc.png" width="56" height="56" alt="IMC Toys" style="display:block; width:56px; height:56px; border:0;">
+                      </td>
+                      <td valign="middle" style="font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:14px; line-height:20px; color:#333333;">
+                        <strong style="color:#0055A5;">[Nombre y apellidos]</strong><br>
+                        <span style="color:#666666;">[Cargo] · IMC Toys</span><br>
+                        <!-- Correo del remitente: escríbelo en Outlook (en texto, sin enlace, para no dejar un mailto vacío) -->
+                        <span style="color:#0055A5; font-weight:600;">[correo@imc.es]</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+      <!-- ============ FIN DE LA TARJETA ============ -->
+    </td>
+    <td class="lateral" bgcolor="#72c4fd" height="17" style="min-width:16px; background-color:#72c4fd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #72c4fd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#77c2fc" height="17" style="min-width:16px; background-color:#77c2fc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #77c2fc;">&nbsp;</td>
+    <td class="lateral" bgcolor="#77c2fc" height="17" style="min-width:16px; background-color:#77c2fc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #77c2fc;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#7bc0fa" height="17" style="min-width:16px; background-color:#7bc0fa; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #7bc0fa;">&nbsp;</td>
+    <td class="lateral" bgcolor="#7bc0fa" height="17" style="min-width:16px; background-color:#7bc0fa; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #7bc0fa;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#7fbef9" height="17" style="min-width:16px; background-color:#7fbef9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #7fbef9;">&nbsp;</td>
+    <td class="lateral" bgcolor="#7fbef9" height="17" style="min-width:16px; background-color:#7fbef9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #7fbef9;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#84bcf7" height="17" style="min-width:16px; background-color:#84bcf7; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #84bcf7;">&nbsp;</td>
+    <td class="lateral" bgcolor="#84bcf7" height="17" style="min-width:16px; background-color:#84bcf7; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #84bcf7;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#88baf6" height="17" style="min-width:16px; background-color:#88baf6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #88baf6;">&nbsp;</td>
+    <td class="lateral" bgcolor="#88baf6" height="17" style="min-width:16px; background-color:#88baf6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #88baf6;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#8db8f4" height="17" style="min-width:16px; background-color:#8db8f4; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #8db8f4;">&nbsp;</td>
+    <td class="lateral" bgcolor="#8db8f4" height="17" style="min-width:16px; background-color:#8db8f4; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #8db8f4;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#91b6f2" height="17" style="min-width:16px; background-color:#91b6f2; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #91b6f2;">&nbsp;</td>
+    <td class="lateral" bgcolor="#91b6f2" height="17" style="min-width:16px; background-color:#91b6f2; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #91b6f2;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#95b4f1" height="17" style="min-width:16px; background-color:#95b4f1; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #95b4f1;">&nbsp;</td>
+    <td class="lateral" bgcolor="#95b4f1" height="17" style="min-width:16px; background-color:#95b4f1; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #95b4f1;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#9ab2ef" height="17" style="min-width:16px; background-color:#9ab2ef; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #9ab2ef;">&nbsp;</td>
+    <td class="lateral" bgcolor="#9ab2ef" height="17" style="min-width:16px; background-color:#9ab2ef; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #9ab2ef;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#9eb0ee" height="17" style="min-width:16px; background-color:#9eb0ee; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #9eb0ee;">&nbsp;</td>
+    <td class="lateral" bgcolor="#9eb0ee" height="17" style="min-width:16px; background-color:#9eb0ee; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #9eb0ee;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#a2aeec" height="17" style="min-width:16px; background-color:#a2aeec; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #a2aeec;">&nbsp;</td>
+    <td class="lateral" bgcolor="#a2aeec" height="17" style="min-width:16px; background-color:#a2aeec; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #a2aeec;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#a7aceb" height="17" style="min-width:16px; background-color:#a7aceb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #a7aceb;">&nbsp;</td>
+    <td class="lateral" bgcolor="#a7aceb" height="17" style="min-width:16px; background-color:#a7aceb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #a7aceb;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#abaae9" height="17" style="min-width:16px; background-color:#abaae9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #abaae9;">&nbsp;</td>
+    <td class="lateral" bgcolor="#abaae9" height="17" style="min-width:16px; background-color:#abaae9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #abaae9;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#b0a9e8" height="17" style="min-width:16px; background-color:#b0a9e8; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b0a9e8;">&nbsp;</td>
+    <td class="lateral" bgcolor="#b0a9e8" height="17" style="min-width:16px; background-color:#b0a9e8; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b0a9e8;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#b4a7e6" height="17" style="min-width:16px; background-color:#b4a7e6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b4a7e6;">&nbsp;</td>
+    <td class="lateral" bgcolor="#b4a7e6" height="17" style="min-width:16px; background-color:#b4a7e6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b4a7e6;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#b8a5e4" height="17" style="min-width:16px; background-color:#b8a5e4; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b8a5e4;">&nbsp;</td>
+    <td class="lateral" bgcolor="#b8a5e4" height="17" style="min-width:16px; background-color:#b8a5e4; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #b8a5e4;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#bda3e3" height="17" style="min-width:16px; background-color:#bda3e3; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #bda3e3;">&nbsp;</td>
+    <td class="lateral" bgcolor="#bda3e3" height="17" style="min-width:16px; background-color:#bda3e3; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #bda3e3;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#c1a1e1" height="17" style="min-width:16px; background-color:#c1a1e1; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #c1a1e1;">&nbsp;</td>
+    <td class="lateral" bgcolor="#c1a1e1" height="17" style="min-width:16px; background-color:#c1a1e1; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #c1a1e1;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#c59fe0" height="17" style="min-width:16px; background-color:#c59fe0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #c59fe0;">&nbsp;</td>
+    <td class="lateral" bgcolor="#c59fe0" height="17" style="min-width:16px; background-color:#c59fe0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #c59fe0;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#ca9dde" height="17" style="min-width:16px; background-color:#ca9dde; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ca9dde;">&nbsp;</td>
+    <td class="lateral" bgcolor="#ca9dde" height="17" style="min-width:16px; background-color:#ca9dde; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ca9dde;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#ce9bdd" height="17" style="min-width:16px; background-color:#ce9bdd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ce9bdd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#ce9bdd" height="17" style="min-width:16px; background-color:#ce9bdd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ce9bdd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#d299db" height="17" style="min-width:16px; background-color:#d299db; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #d299db;">&nbsp;</td>
+    <td class="lateral" bgcolor="#d299db" height="17" style="min-width:16px; background-color:#d299db; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #d299db;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#d797d9" height="17" style="min-width:16px; background-color:#d797d9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #d797d9;">&nbsp;</td>
+    <td class="lateral" bgcolor="#d797d9" height="17" style="min-width:16px; background-color:#d797d9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #d797d9;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#db95d8" height="17" style="min-width:16px; background-color:#db95d8; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #db95d8;">&nbsp;</td>
+    <td class="lateral" bgcolor="#db95d8" height="17" style="min-width:16px; background-color:#db95d8; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #db95d8;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#e093d6" height="17" style="min-width:16px; background-color:#e093d6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e093d6;">&nbsp;</td>
+    <td class="lateral" bgcolor="#e093d6" height="17" style="min-width:16px; background-color:#e093d6; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e093d6;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#e491d5" height="17" style="min-width:16px; background-color:#e491d5; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e491d5;">&nbsp;</td>
+    <td class="lateral" bgcolor="#e491d5" height="17" style="min-width:16px; background-color:#e491d5; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e491d5;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#e88fd3" height="17" style="min-width:16px; background-color:#e88fd3; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e88fd3;">&nbsp;</td>
+    <td class="lateral" bgcolor="#e88fd3" height="17" style="min-width:16px; background-color:#e88fd3; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #e88fd3;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#ed8dd2" height="17" style="min-width:16px; background-color:#ed8dd2; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ed8dd2;">&nbsp;</td>
+    <td class="lateral" bgcolor="#ed8dd2" height="17" style="min-width:16px; background-color:#ed8dd2; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #ed8dd2;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f18bd0" height="17" style="min-width:16px; background-color:#f18bd0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f18bd0;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f18bd0" height="17" style="min-width:16px; background-color:#f18bd0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f18bd0;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f18ad0" height="17" style="min-width:16px; background-color:#f18ad0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f18ad0;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f18ad0" height="17" style="min-width:16px; background-color:#f18ad0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f18ad0;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f288d0" height="17" style="min-width:16px; background-color:#f288d0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f288d0;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f288d0" height="17" style="min-width:16px; background-color:#f288d0; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f288d0;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f287cf" height="17" style="min-width:16px; background-color:#f287cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f287cf;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f287cf" height="17" style="min-width:16px; background-color:#f287cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f287cf;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f285cf" height="17" style="min-width:16px; background-color:#f285cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f285cf;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f285cf" height="17" style="min-width:16px; background-color:#f285cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f285cf;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f284cf" height="17" style="min-width:16px; background-color:#f284cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f284cf;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f284cf" height="17" style="min-width:16px; background-color:#f284cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f284cf;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f383cf" height="17" style="min-width:16px; background-color:#f383cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f383cf;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f383cf" height="17" style="min-width:16px; background-color:#f383cf; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f383cf;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f381ce" height="17" style="min-width:16px; background-color:#f381ce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f381ce;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f381ce" height="17" style="min-width:16px; background-color:#f381ce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f381ce;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f380ce" height="17" style="min-width:16px; background-color:#f380ce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f380ce;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f380ce" height="17" style="min-width:16px; background-color:#f380ce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f380ce;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f37ece" height="17" style="min-width:16px; background-color:#f37ece; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f37ece;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f37ece" height="17" style="min-width:16px; background-color:#f37ece; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f37ece;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f47dce" height="17" style="min-width:16px; background-color:#f47dce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47dce;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f47dce" height="17" style="min-width:16px; background-color:#f47dce; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47dce;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f47ccd" height="17" style="min-width:16px; background-color:#f47ccd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47ccd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f47ccd" height="17" style="min-width:16px; background-color:#f47ccd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47ccd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f47acd" height="17" style="min-width:16px; background-color:#f47acd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47acd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f47acd" height="17" style="min-width:16px; background-color:#f47acd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f47acd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f479cd" height="17" style="min-width:16px; background-color:#f479cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f479cd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f479cd" height="17" style="min-width:16px; background-color:#f479cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f479cd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f577cd" height="17" style="min-width:16px; background-color:#f577cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f577cd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f577cd" height="17" style="min-width:16px; background-color:#f577cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f577cd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f576cd" height="17" style="min-width:16px; background-color:#f576cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f576cd;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f576cd" height="17" style="min-width:16px; background-color:#f576cd; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f576cd;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f575cc" height="17" style="min-width:16px; background-color:#f575cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f575cc;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f575cc" height="17" style="min-width:16px; background-color:#f575cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f575cc;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f673cc" height="17" style="min-width:16px; background-color:#f673cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f673cc;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f673cc" height="17" style="min-width:16px; background-color:#f673cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f673cc;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f672cc" height="17" style="min-width:16px; background-color:#f672cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f672cc;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f672cc" height="17" style="min-width:16px; background-color:#f672cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f672cc;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f670cc" height="17" style="min-width:16px; background-color:#f670cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f670cc;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f670cc" height="17" style="min-width:16px; background-color:#f670cc; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f670cc;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f66fcb" height="17" style="min-width:16px; background-color:#f66fcb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f66fcb;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f66fcb" height="17" style="min-width:16px; background-color:#f66fcb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f66fcb;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f76ecb" height="17" style="min-width:16px; background-color:#f76ecb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76ecb;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f76ecb" height="17" style="min-width:16px; background-color:#f76ecb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76ecb;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f76ccb" height="17" style="min-width:16px; background-color:#f76ccb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76ccb;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f76ccb" height="17" style="min-width:16px; background-color:#f76ccb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76ccb;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f76bcb" height="17" style="min-width:16px; background-color:#f76bcb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76bcb;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f76bcb" height="17" style="min-width:16px; background-color:#f76bcb; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f76bcb;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f769ca" height="17" style="min-width:16px; background-color:#f769ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f769ca;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f769ca" height="17" style="min-width:16px; background-color:#f769ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f769ca;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f868ca" height="17" style="min-width:16px; background-color:#f868ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f868ca;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f868ca" height="17" style="min-width:16px; background-color:#f868ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f868ca;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f867ca" height="17" style="min-width:16px; background-color:#f867ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f867ca;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f867ca" height="17" style="min-width:16px; background-color:#f867ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f867ca;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f865ca" height="17" style="min-width:16px; background-color:#f865ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f865ca;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f865ca" height="17" style="min-width:16px; background-color:#f865ca; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f865ca;">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="lateral" bgcolor="#f864c9" height="17" style="min-width:16px; background-color:#f864c9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f864c9;">&nbsp;</td>
+    <td class="lateral" bgcolor="#f864c9" height="17" style="min-width:16px; background-color:#f864c9; height:17px; border:0; font-size:1px; line-height:1px; padding:0; mso-line-height-rule:exactly; border-bottom:1px solid #f864c9;">&nbsp;</td>
+  </tr>
+  <!-- Pie + cierre de 16px -->
+  <tr>
+    <td colspan="3" align="center" bgcolor="#f962c9" style="background-color:#f962c9; border:0; padding:20px 12px 14px 12px; font-family:Montserrat, Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#ffffff;">
+      <span style="font-weight:700; letter-spacing:1px; color:#ffffff;">IMC TOYS</span><br>
+            <a href="https://www.imctoys.com" style="color:#ffffff; text-decoration:underline;"><span style="color:#ffffff;">www.imctoys.com</span></a><br>
+            <span style="color:#ffffff; font-size:11px;">Has recibido este correo porque formas parte de la familia IMC Toys.</span>
+    </td>
+  </tr>
+  <tr><td colspan="3" height="16" bgcolor="#f961c9" style="height:16px; max-height:16px; font-size:1px; line-height:1px; padding:0; border:0; background-color:#f961c9; mso-line-height-rule:exactly;">&nbsp;</td></tr>
+</table>
+</div>
+
+
+
+</body>
+</html>

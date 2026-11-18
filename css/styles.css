@@ -1,0 +1,569 @@
+:root {
+    --imc-rojo: #E3001B;
+    --imc-rojo-oscuro: #B30015;
+    --imc-azul: #0055A5;
+    --fondo-magico: linear-gradient(135deg, #6ec6ff 0%, #f18bd0 50%, #f961c9 100%);
+    
+    --blanco-puro: #FFFFFF;
+    --texto-oscuro: #333333;
+    --texto-gris: #666666;
+    --borde-input: #CCCCCC;
+    
+    --fuente-principal: 'Montserrat', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Todas las páginas (login, registro, calendario y admin): solo scroll VERTICAL.
+   Si algún adorno sobresale por un lado, se recorta en vez de crear scroll horizontal. */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    color: var(--texto-oscuro);
+}
+
+input, button, select, textarea {
+    font-family: inherit;
+}
+
+/* =========================================
+   LAYOUT BASE
+   ========================================= */
+.layout-login {
+    /* ESCALA DE LA INTERFAZ (login y registro).
+       En escritorio todo se dibuja al 75%, igual que con el zoom del navegador al 75%.
+       Los scripts de Canvas leen esta misma variable para encoger sus dibujos. */
+    --escala-ui: 1;
+
+    background: var(--fondo-magico);
+    background-attachment: fixed;   /* Si la página crece, el degradado no se repite en franjas */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+@media (min-width: 951px) {
+    .layout-login {
+        --escala-ui: 0.75;
+        zoom: var(--escala-ui);                       /* Encoge todo el HTML */
+        min-height: calc(100vh / var(--escala-ui));   /* 100vh también se encoge: lo compensamos */
+    }
+
+    /* Las capas a pantalla completa deben seguir ocupando toda la ventana:
+       les aplicamos el zoom contrario (0.75 x 1.333 = 1). Lo que dibujan
+       lo encoge cada script con ctx.setTransform(escala, ...) */
+    .layout-login .capa-canvas,
+    .layout-login #canvas-arbol-3d,
+    .layout-login #contenedor-nieve {
+        zoom: calc(1 / var(--escala-ui));
+    }
+
+    /* La guirnalda se encoge con el resto (bombillas y pino más pequeños) y su
+       width: 100% ya cubre todo el ancho de la ventana: no necesita compensación */
+}
+
+/* =========================================
+   GUIRNALDA EN TODO EL ANCHO SUPERIOR
+   ========================================= */
+.techo-guirnalda-completa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin-bottom: 0px;
+    width: 100%;
+    /* Altura propia: sin ella el contenedor solo mide lo que una bombilla
+       y el overflow: hidden recortaba las luces, que están desplazadas hacia abajo */
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 25; /* Siempre por encima del árbol y de la nieve */
+}
+
+.linea-luces {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    margin: 0;
+    list-style: none;
+}
+
+.linea-luces li {
+    position: relative;
+    width: 12px;
+    height: 28px;
+    border-radius: 50%;
+    top: 22px; /* Deja sitio arriba para que se vea el cable curvo */
+    flex-shrink: 0; /* Evita que las bombillas se aplasten en pantallas estrechas */
+}
+
+/* Casquillo */
+.linea-luces li::before {
+    content: "";
+    position: absolute;
+    background: #222;
+    width: 10px;
+    height: 9px;
+    border-radius: 3px;
+    top: -4px;
+    left: 1px;
+}
+
+/* Cable curvo conectado */
+.linea-luces li::after {
+    content: "";
+    position: absolute;
+    top: -14px;
+    left: 9px;
+    width: calc(100vw / 35); /* El ancho del cable se adapta proporcionalmente */
+    min-width: 38px;
+    height: 19px;
+    border-bottom: solid #333 2px;
+    border-radius: 30%;
+}
+
+/* Colores y brillos */
+.linea-luces .red    { background-color: #fb4545; animation: lightningRed 1s infinite; }
+.linea-luces .green  { background-color: #24D024; animation: lightningGreen 1.5s infinite; }
+.linea-luces .yellow { background-color: #fff952; animation: lightningYellow 2s infinite; }
+.linea-luces .blue   { background-color: #0A53DE; animation: lightningBlue 2.5s infinite; }
+.linea-luces .pink   { background-color: #f53896; animation: lightningPink 2s infinite; }
+
+@keyframes lightningRed    { 0%, 100% { box-shadow: 0 5px 25px 8px #fb4545; } 50% { box-shadow: none; } }
+@keyframes lightningGreen  { 0%, 100% { box-shadow: 0 5px 25px 8px #24D024; } 50% { box-shadow: none; } }
+@keyframes lightningYellow { 0%, 100% { box-shadow: 0 5px 25px 8px #fff952; } 50% { box-shadow: none; } }
+@keyframes lightningBlue   { 0%, 100% { box-shadow: 0 5px 25px 8px #0A53DE; } 50% { box-shadow: none; } }
+@keyframes lightningPink   { 0%, 100% { box-shadow: 0 5px 25px 8px #f53896; } 50% { box-shadow: none; } }
+
+/* En móvil no caben 35 bombillas: mostramos solo las 15 primeras.
+   Va DESPUÉS de las reglas base para que pueda sobrescribirlas. */
+@media (max-width: 600px) {
+    .linea-luces li:nth-child(n+16) {
+        display: none;
+    }
+    .linea-luces li::after {
+        width: calc(100vw / 15);
+    }
+}
+
+/* =========================================
+   CANVAS DEL ÁRBOL Y NIEVE
+   ========================================= */
+/* Canvas a pantalla completa de la página de registro.
+   El orden de capas lo marca el z-index de cada uno. */
+.capa-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;   /* No bloquean los clics del formulario */
+}
+
+#canvas-bokeh       { z-index: 1; }    /* Fondo */
+#canvas-suelo-nieve { z-index: 2; }    /* Manto de nieve del suelo */
+#canvas-muneco      { z-index: 3; }    /* Muñeco, apoyado en el suelo */
+#canvas-nieve       { z-index: 4; }    /* La nieve cae por delante del muñeco */
+#canvas-buzon       { z-index: 11; }   /* Por encima del formulario: el sobre sale del input */
+
+/* Guirnalda del registro: la rama de pino (canvas) va detrás de las bombillas */
+.guirnalda-pino #canvas-guirnalda {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.guirnalda-pino .linea-luces {
+    position: relative;
+    z-index: 1;
+}
+
+/* Contenedor del formulario de registro: por encima de los canvas */
+.contenedor-registro {
+    position: relative;   /* Referencia para colocar las figuras encima */
+    z-index: 10;
+    width: 92%;           /* Nunca toca los bordes de la pantalla */
+    max-width: 440px;
+}
+
+/* Pantallas bajas: hueco para que las figuras no se salgan por arriba */
+@media (max-height: 820px) {
+    .contenedor-registro { margin-top: 110px; }
+}
+
+/* Móvil: el formulario sube y deja libre la franja de abajo, donde quedan
+   el muñeco (izquierda) y el buzón (derecha) sin taparlo. Si la pantalla es
+   muy baja se puede hacer scroll vertical (antes overflow: hidden lo impedía). */
+@media (max-width: 767px) {
+    .layout-login {
+        overflow: visible;
+        overflow-x: clip;
+    }
+
+    .contenedor-registro { margin-top: 90px; }
+}
+
+/* Login en móvil: la tarjeta sube y deja abajo el sitio del árbol y los regalos.
+   Solo si hay sitio: por debajo de 300px de ancho o 560px de alto arbol3d.js no los dibuja */
+@media (min-width: 300px) and (max-width: 767px) and (min-height: 560px) {
+    .contenedor-login { margin-bottom: 190px; }
+    .contenedor-registro { margin-bottom: 170px; }   /* Sitio del muñeco y el buzón */
+}
+
+/* Figuras del registro: las 3 traen ~13% de margen transparente bajo los pies */
+.figura-reg-1 { transform: rotate(-5deg); margin-bottom: calc(var(--alto-figura) * -0.132); }
+.figura-reg-2 { transform: rotate(0deg);  margin-bottom: calc(var(--alto-figura) * -0.133); }
+.figura-reg-3 { transform: rotate(5deg);  margin-bottom: calc(var(--alto-figura) * -0.137); }
+
+#canvas-arbol-3d {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#contenedor-nieve {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.copo {
+    position: absolute;
+    top: -15px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: 0 0 8px #ffffff;
+    opacity: 0.8;
+    animation: caidaNieve 6s linear infinite;
+}
+
+@keyframes caidaNieve {
+    0%   { top: -15px; transform: translateX(0); opacity: 0.9; }
+    25%  { transform: translateX(-8px); }
+    50%  { transform: translateX(8px); }
+    75%  { transform: translateX(-4px); }
+    100% { top: 105vh; transform: translateX(0); opacity: 0.2; }
+}
+
+/* ==========================================================
+   1. LOGO IMC TOYS (SUPERIOR DERECHA)
+   ========================================================== */
+/* 1. Posición fija y animación de entrada (Pop-in) */
+.logo-superior-derecha {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    z-index: 10;
+    
+    /* Animación pop-in automática */
+    opacity: 0;
+    animation: popInLogo 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 2.2s; /* Tiempo en segundos hasta que empiezan a brotar los regalos */
+}
+
+/* 2. Imagen del logo y efecto hover */
+.logo-imc {
+    display: block;
+    height: 350px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
+    cursor: pointer;
+    
+    /* Transición suave para cuando entres y salgas con el ratón */
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* 3. Selector correcto para el hover */
+.logo-imc:hover {
+    transform: scale(1.08); /* Crece sutilmente sin descuadrar la pantalla */
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25)); /* Sombra más viva */
+}
+
+/* 4. Fotogramas de la aparición (nace pequeño y transparente, y rebota) */
+@keyframes popInLogo {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) translateY(-15px);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1.05) translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==========================================================
+   2. CONTENEDOR DEL LOGIN Y FIGURAS APOYADAS
+   ========================================================== */
+.contenedor-login {
+    position: relative;  /* Referencia para colocar las figuras encima */
+    z-index: 10;
+    width: 92%;           /* Nunca toca los bordes de la pantalla */
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Pantallas bajas: no hay sitio para centrar la caja y que las figuras
+   no choquen con la guirnalda, así que la bajamos lo justo */
+@media (max-height: 820px) {
+    .contenedor-login { margin-top: 110px; }
+}
+
+/* Fila de figuras: su base queda 22px DENTRO de la caja,
+   así parece que las muñecas están sentadas en el borde */
+.figuras-login {
+    position: absolute;
+    bottom: calc(100% - 22px);
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-end;   /* Todas apoyadas en la misma línea */
+    padding: 0 10px;
+    pointer-events: none;    /* No bloquean clics en el formulario */
+    z-index: 2;              /* Por delante de la caja de login */
+}
+
+.figura {
+    --alto-figura: 135px;    /* Una sola variable: el resto se calcula a partir de ella.
+                                135px: las 4 caben justas sobre la tarjeta de 440px */
+    height: var(--alto-figura);
+    width: auto;
+    object-fit: contain;
+    /* Doble sombra: contorno blanco suave + sombra de apoyo para que resalten */
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))
+            drop-shadow(0 8px 12px rgba(0, 0, 0, 0.25));
+    transform-origin: bottom center; /* Giran desde los pies, sin despegarse */
+}
+
+/* Cada PNG trae un margen transparente distinto bajo los pies.
+   El margin-bottom negativo (un % de su altura) lo compensa
+   para que las 4 apoyen de verdad en el borde de la caja.
+   Además, cada una con una inclinación distinta, más natural. */
+.figura-1 { transform: rotate(-6deg); margin-bottom: calc(var(--alto-figura) * -0.044); }
+.figura-2 { transform: rotate(-2deg); margin-bottom: calc(var(--alto-figura) * -0.061); }
+.figura-3 { transform: rotate(3deg);  margin-bottom: calc(var(--alto-figura) * -0.097); }
+.figura-4 { transform: rotate(6deg);  margin-bottom: calc(var(--alto-figura) * -0.142); }
+
+/* Móvil: figuras más pequeñas para que quepan las 4 */
+@media (max-width: 600px) {
+    .contenedor-login { margin-top: 120px; }
+    /* 27vw: las 4 figuras caben siempre sobre la tarjeta, por estrecha que sea la pantalla */
+    .figura { --alto-figura: min(115px, 27vw); }
+}
+
+/* Tablet y móvil (sin la escala del 75%): el PNG del logo (casi todo margen
+   transparente) se reduce y sube, para que no pise a los personajes */
+@media (max-width: 950px) {
+    .logo-superior-derecha { top: 24px; right: 16px; }
+    .logo-imc { height: 220px; }
+}
+
+@media (max-width: 600px) {
+    .logo-superior-derecha { top: 40px; right: 4px; }
+    .logo-imc { height: 150px; }
+}
+
+/* Pantallas muy estrechas: el logo no cabe sin pisar a las figuras */
+@media (max-width: 360px) {
+    .logo-superior-derecha { display: none; }
+}
+
+
+/* =========================================
+   CAJA DE LOGIN Y FORMULARIO
+   ========================================= */
+.caja-login {
+    position: relative;
+    z-index: 1;   /* Detrás de las figuras (z-index: 2) */
+    background-color: rgba(255, 255, 255, 0.96);
+    /* Sin backdrop-filter: con un fondo al 96% no se notaba y obligaba
+       a desenfocar el canvas animado en cada fotograma */
+    /* Padding fluido: más aire en escritorio, más compacto en móvil */
+    padding: clamp(28px, 6vw, 45px) clamp(20px, 5vw, 40px);
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+}
+
+.titulo-login {
+    font-size: clamp(1.3rem, 7vw, 1.8rem);   /* Nunca se sale de la tarjeta en móviles estrechos */
+    font-weight: 700;
+    color: var(--imc-azul);
+    margin-bottom: 5px;
+}
+
+.subtitulo-login {
+    font-size: 0.9rem;
+    color: var(--texto-gris);
+    margin-bottom: 25px;
+}
+
+/* --- 0. MENSAJE INFORMATIVO / ÉXITO (PHP) --- */
+.alerta-exito {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #c8e6c9;
+    text-align: left;
+}
+
+/* --- 1. ERROR DEL BACKEND (PHP) --- */
+.alerta-error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #ffcdd2;
+    text-align: left;
+}
+
+/* --- 2. VALIDACIÓN DEL FRONTEND (JS en vivo) --- */
+
+/* Input con borde y resplandor rojo.
+   !important hace que gane también a .grupo-input input:focus */
+.input-error {
+    border-color: #c62828 !important;
+    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.25), 0 0 18px 4px rgba(198, 40, 40, 0.45) !important; /* Anillo + difuminado amplio */
+}
+
+/* Texto de advertencia pequeño justo bajo el input */
+.texto-error {
+    display: block;
+    color: #c62828;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    min-height: 18px; /* Evita que los elementos de abajo den saltos al escribir */
+    text-align: left;
+}
+
+.texto-error:empty {
+    display: none;
+}
+
+/* Estado deshabilitado del botón principal */
+.btn-primario:disabled {
+    background-color: #e57373 !important; /* Rojo lavado / atenuado */
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.grupo-input {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.grupo-input label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--texto-oscuro);
+}
+
+.grupo-input input {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid var(--borde-input);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.grupo-input input:focus {
+    outline: none;
+    border-color: var(--imc-azul);
+    box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.15);
+}
+
+.grupo-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    color: var(--texto-oscuro);
+}
+
+.btn-primario {
+    width: 100%;
+    background-color: var(--imc-rojo);
+    color: var(--blanco-puro);
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-primario:hover {
+    background-color: var(--imc-rojo-oscuro);
+}
+
+.btn-primario:active {
+    transform: scale(0.98);
+}
+
+.enlaces-login {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--texto-gris);
+}
+
+.enlace-destacado {
+    color: var(--imc-azul);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.enlace-destacado:hover {
+    color: var(--imc-rojo);
+    text-decoration: underline;
+}

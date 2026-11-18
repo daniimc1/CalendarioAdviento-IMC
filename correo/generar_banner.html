@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de banner GIF - Correo IMC Toys</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap">
+<style>
+    /* Herramienta interna (NO va a producción): genera banner-navidad.gif para el correo */
+    body {
+        margin: 0;
+        padding: 24px;
+        font-family: 'Montserrat', Arial, sans-serif;
+        background: linear-gradient(135deg, #6ec6ff 0%, #f18bd0 50%, #f961c9 100%);
+        color: #333;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+    .panel {
+        max-width: 680px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+    }
+    h1 { color: #0055A5; font-size: 1.4rem; margin: 0 0 6px; }
+    p { color: #666; font-size: 0.9rem; margin: 0 0 16px; }
+    canvas { display: block; max-width: 100%; }   /* A sangre: sin esquinas redondeadas */
+    .acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+    button, a.boton {
+        background: #E3001B; color: #fff; border: 0; border-radius: 8px;
+        padding: 12px 18px; font: 600 0.95rem 'Montserrat', Arial, sans-serif;
+        cursor: pointer; text-decoration: none;
+    }
+    button:hover, a.boton:hover { background: #B30015; }
+    button:disabled { background: #e57373; opacity: 0.65; cursor: not-allowed; }
+    #estado { font-size: 0.85rem; color: #0055A5; font-weight: 600; }
+    #muneco-fuente { position: absolute; left: -9999px; top: 0; width: 800px; height: 600px; border: 0; }
+</style>
+</head>
+<body>
+<div class="panel">
+    <h1>Banner animado para el correo (540 × 216, a sangre)</h1>
+    <p>Misma estética que la web: degradado mágico, bokeh, nieve cayendo, guirnalda de luces,
+       manto de nieve, el muñeco de nieve real (js/muneco3d.js) y dos personajes.
+       El bucle es perfecto: el último fotograma enlaza con el primero.</p>
+
+    <canvas id="banner" width="540" height="216"></canvas>
+
+    <div class="acciones">
+        <button type="button" id="btn-generar" disabled>Generar GIF</button>
+        <a class="boton" id="btn-descargar" download="banner-navidad.gif" hidden>Descargar banner-navidad.gif</a>
+        <span id="estado">Cargando imágenes y muñeco…</span>
+    </div>
+</div>
+
+<!-- El muñeco de nieve se dibuja con el script REAL de la web dentro de este iframe
+     (800x600 -> diseño "tablet": centrado abajo). Copiamos su canvas en cada fotograma. -->
+<iframe id="muneco-fuente" title="Muñeco de nieve" aria-hidden="true"></iframe>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+<script>
+(async function () {
+    // La escena se diseña en 600x240 ("tamaño lógico") y se graba a 560x224:
+    // así cabe en el panel de lectura de Outlook sin scroll horizontal.
+    const ANCHO = 600, ALTO = 240;
+    // 540x216 = ancho exacto de la tarjeta del correo. Se exporta A SANGRE (rectangular,
+    // sin esquinas redondeadas ni borde): el GIF no tiene transparencia alfa y cualquier
+    // esquina recortada dejaría "picos" del color de fondo.
+    const SALIDA_ANCHO = 540, SALIDA_ALTO = 216, ESCALA = SALIDA_ANCHO / ANCHO;
+    const FOTOGRAMAS = 16;          // 16 x 150 ms = 2,4 s por vuelta (más ligero: < 1 MB)
+    const RETARDO = 150;            // ms entre fotogramas del GIF
+    const canvas = document.getElementById('banner');
+    const ctx = canvas.getContext('2d');
+    const estado = document.getElementById('estado');
+    const TAU = Math.PI * 2;
+
+    // ---------- PALETA EXACTA DE LA WEB ----------
+    const FONDO = ['#6ec6ff', '#f18bd0', '#f961c9'];                 // --fondo-magico (styles.css)
+    const BOKEH = [[255, 240, 180], [255, 255, 255], [255, 215, 150], [255, 190, 220]];   // bokeh.js
+    const BOMBILLAS = ['#fb4545', '#fff952', '#0A53DE', '#f53896', '#24D024'];          // .linea-luces
+    const NIEVE_SUELO = ['#ffffff', '#f3f4fc', '#e1e3f6', '#cbc4ec'];                   // suelo-nieve.js
+
+    // Números pseudoaleatorios fijos: el GIF sale siempre igual
+    let semilla = 7;
+    const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
+
+    function cargarImagen(src) {
+        return new Promise((ok, mal) => {
+            const i = new Image();
+            i.onload = () => ok(i);
+            i.onerror = mal;
+            i.src = src;
+        });
+    }
+
+    // ---------- 1. MUÑECO REAL EN UN IFRAME CON RELOJ CONTROLADO ----------
+    // Sustituimos Date.now y requestAnimationFrame: cada fotograma lo avanzamos nosotros.
+    const iframe = document.getElementById('muneco-fuente');
+    iframe.srcdoc = `<!DOCTYPE html><html><head><base href="${location.href}">
+        <script>window.__t=1000;Date.now=function(){return window.__t};
+        window.__cbs=[];window.requestAnimationFrame=function(cb){window.__cbs.push(cb);return 1};<\/script>
+        </head><body style="margin:0;overflow:hidden"><canvas id="canvas-muneco"></canvas>
+        <script src="../js/motor-animacion.js"><\/script><script src="../js/muneco3d.js"><\/script></body></html>`;
+    await new Promise((ok) => iframe.onload = ok);
+    const w = iframe.contentWindow;
+    w.cambiarEstadoMuneco('saludo');   // Saluda con la mano y suelta chispas
+    const lienzoMuneco = w.document.getElementById('canvas-muneco');
+
+    function avanzarMuneco(ms) {
+        w.__t += ms;
+        const cbs = w.__cbs;
+        w.__cbs = [];
+        cbs.forEach((cb) => cb(w.__t));
+    }
+    // Unos fotogramas de "calentamiento" para que el saludo ya esté en marcha
+    for (let i = 0; i < 20; i++) avanzarMuneco(RETARDO);
+
+    // ---------- 2. IMÁGENES ----------
+    await document.fonts.load('800 26px Montserrat');
+    await document.fonts.load('600 13px Montserrat');
+    const [bebe, unicornio, logo] = await Promise.all([
+        cargarImagen('../img/bbcry_navidena.png'),
+        cargarImagen('../img/unicornio-navidad.png'),
+        cargarImagen('../img/favicon-192.png')        // Logo IMC recortado (sin margen transparente)
+    ]);
+
+    // ---------- 3. ELEMENTOS PERIÓDICOS (bucle perfecto) ----------
+    // Todo se mueve con funciones de t (0 -> 1 = una vuelta): al llegar a 1 vuelve exactamente al inicio.
+    const orbes = Array.from({ length: 11 }, (_, i) => ({
+        x: azar() * ANCHO, y0: azar(), r: 14 + azar() * 22,
+        color: BOKEH[i % BOKEH.length], alfa: 0.30 + azar() * 0.22, fase: azar(), vueltas: 1 + (i % 2)
+    }));
+    const copos = Array.from({ length: 70 }, () => ({
+        x: azar() * ANCHO, y0: azar(), r: 0.9 + azar() * 2.2,
+        vueltas: 1 + Math.floor(azar() * 2), vaiven: 2 + azar() * 6, fase: azar(), alfa: 0.55 + azar() * 0.4
+    }));
+    const destellos = Array.from({ length: 9 }, () => ({
+        x: 30 + azar() * (ANCHO - 60), y: 34 + azar() * 120, tam: 2.5 + azar() * 3, fase: azar()
+    }));
+    const escarcha = Array.from({ length: 40 }, () => ({ x: azar() * ANCHO, y: 205 + azar() * 33, r: 0.4 + azar() * 1.2 }));
+
+    // Sprite del orbe (degradado radial de bokeh.js, pintado una vez por color)
+    const spritesOrbe = BOKEH.map(([r, g, b]) => {
+        const s = document.createElement('canvas');
+        s.width = s.height = 64;
+        const c = s.getContext('2d');
+        const gr = c.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gr.addColorStop(0, `rgba(${r},${g},${b},1)`);
+        gr.addColorStop(0.55, `rgba(${r},${g},${b},0.5)`);
+        gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        c.fillStyle = gr;
+        c.fillRect(0, 0, 64, 64);
+        return s;
+    });
+
+    function estrella4(x, y, tam, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y - tam * 1.8); ctx.lineTo(x + tam * 0.3, y - tam * 0.3);
+        ctx.lineTo(x + tam * 1.8, y); ctx.lineTo(x + tam * 0.3, y + tam * 0.3);
+        ctx.lineTo(x, y + tam * 1.8); ctx.lineTo(x - tam * 0.3, y + tam * 0.3);
+        ctx.lineTo(x - tam * 1.8, y); ctx.lineTo(x - tam * 0.3, y - tam * 0.3);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function sueloNieve() {
+        // Colinas lejanas (lila translúcido) + manto principal, como suelo-nieve.js
+        ctx.beginPath();
+        ctx.moveTo(0, 206);
+        ctx.quadraticCurveTo(150, 194, 300, 204);
+        ctx.quadraticCurveTo(450, 214, 600, 198);
+        ctx.lineTo(600, 240); ctx.lineTo(0, 240); ctx.closePath();
+        ctx.fillStyle = 'rgba(240, 232, 255, 0.55)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 214);
+        ctx.quadraticCurveTo(90, 204, 180, 212);
+        ctx.quadraticCurveTo(300, 222, 420, 212);
+        ctx.quadraticCurveTo(520, 204, 600, 213);
+        ctx.lineTo(600, 240); ctx.lineTo(0, 240); ctx.closePath();
+        const gr = ctx.createLinearGradient(0, 205, 0, 240);
+        NIEVE_SUELO.forEach((c, i) => gr.addColorStop(i / 3, c));
+        ctx.fillStyle = gr;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        escarcha.forEach((e) => {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, TAU); ctx.fill();
+        });
+    }
+
+    function guirnalda(t) {
+        // Cable con ondas y bombillas que parpadean como .linea-luces (brillo que va y viene)
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let x = 0; x <= ANCHO; x += 4) {
+            const y = 6 + Math.sin((x / 60) * Math.PI) * 5;
+            x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        for (let i = 0; i < 20; i++) {
+            const x = 15 + i * 30;
+            const y = 6 + Math.sin((x / 60) * Math.PI) * 5 + 4;
+            const color = BOMBILLAS[i % BOMBILLAS.length];
+            const brillo = (Math.cos(TAU * (t * (1 + (i % 3)) + i * 0.17)) + 1) / 2;   // Periódico
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(Math.sin(i) * 0.25);
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 4 + brillo * 14;
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.ellipse(0, 7, 3.6, 7, 0, 0, TAU); ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#222';
+            ctx.fillRect(-3, -1, 6, 4);                 // Casquillo
+            ctx.restore();
+        }
+    }
+
+    // ---------- 4. DIBUJO DE UN FOTOGRAMA ----------
+    function dibujar(t) {
+        ctx.setTransform(ESCALA, 0, 0, ESCALA, 0, 0);   // Dibujo en 600x240 -> lienzo de 540x216
+        // Fondo: degradado mágico (135°)
+        const fondo = ctx.createLinearGradient(0, 0, ANCHO, ALTO * 1.6);
+        fondo.addColorStop(0, FONDO[0]); fondo.addColorStop(0.5, FONDO[1]); fondo.addColorStop(1, FONDO[2]);
+        ctx.fillStyle = fondo;
+        ctx.fillRect(0, 0, ANCHO, ALTO);
+
+        // Bokeh: suben despacio y laten
+        orbes.forEach((o, i) => {
+            const y = (((o.y0 - t * o.vueltas * 0.5) % 1) + 1) % 1 * (ALTO + o.r * 2) - o.r;
+            const pulso = (Math.sin(TAU * (t * o.vueltas + o.fase)) + 1) / 2;
+            ctx.globalAlpha = Math.min(1, o.alfa * (0.75 + pulso * 1.0));
+            ctx.drawImage(spritesOrbe[i % spritesOrbe.length], o.x - o.r, y - o.r, o.r * 2, o.r * 2);
+        });
+        ctx.globalAlpha = 1;
+
+        sueloNieve();
+
+        // Muñeco de nieve REAL (js/muneco3d.js), recortado de su lienzo y escalado
+        // En el iframe 800x600 queda centrado abajo: x≈400, base en y≈594, alto ≈ 290
+        ctx.drawImage(lienzoMuneco, 285, 300, 230, 300, 26, 43, 150, 196);
+
+        // Personajes a la derecha, sentados en la nieve
+        ctx.save();
+        ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 6;
+        ctx.drawImage(bebe, 430, 100, 98, 132);
+        ctx.drawImage(unicornio, 505, 104, 92, 123);
+        ctx.restore();
+
+        // Logo IMC en píldora blanca + título
+        ctx.save();
+        ctx.shadowColor = 'rgba(60, 30, 110, 0.18)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 5;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.beginPath(); ctx.roundRect(232, 40, 136, 96, 20); ctx.fill();
+        ctx.restore();
+        ctx.drawImage(logo, 254, 44, 92, 92);
+
+        ctx.textAlign = 'center';
+        ctx.font = '800 25px Montserrat';
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(60, 30, 110, 0.45)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+        ctx.fillText('¡Felices Fiestas!', 300, 168);
+        ctx.font = '600 12.5px Montserrat';
+        ctx.fillText('IMC Toys · Navidad 2026', 300, 188);
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+        // Destellos dorados que titilan
+        destellos.forEach((d) => {
+            const b = (Math.sin(TAU * (t * 2 + d.fase)) + 1) / 2;
+            ctx.globalAlpha = 0.25 + b * 0.75;
+            estrella4(d.x, d.y, d.tam * (0.75 + b * 0.45), '#fff3b0');
+        });
+        ctx.globalAlpha = 1;
+
+        // Nieve cayendo (por delante de todo)
+        copos.forEach((c) => {
+            const y = ((c.y0 + t * c.vueltas) % 1) * (ALTO + 10) - 5;
+            const x = c.x + Math.sin(TAU * (t * c.vueltas + c.fase)) * c.vaiven;
+            ctx.fillStyle = `rgba(255,255,255,${c.alfa * 0.25})`;
+            ctx.beginPath(); ctx.arc(x, y, c.r * 2.2, 0, TAU); ctx.fill();
+            ctx.fillStyle = `rgba(255,255,255,${c.alfa})`;
+            ctx.beginPath(); ctx.arc(x, y, c.r, 0, TAU); ctx.fill();
+        });
+
+        guirnalda(t);
+    }
+
+    // Vista previa en bucle
+    let fotograma = 0;
+    function vistaPrevia() {
+        if (!generando) {
+            avanzarMuneco(RETARDO);
+            dibujar(fotograma / FOTOGRAMAS);
+            fotograma = (fotograma + 1) % FOTOGRAMAS;
+        }
+        setTimeout(vistaPrevia, RETARDO);
+    }
+    let generando = false;
+    vistaPrevia();
+
+    // ---------- 5. GRABAR EL GIF ----------
+    // El worker de gif.js se crea desde un Blob (el navegador no deja usar uno de otro dominio)
+    const textoWorker = await (await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js')).text();
+    const urlWorker = URL.createObjectURL(new Blob([textoWorker], { type: 'application/javascript' }));
+
+    const btn = document.getElementById('btn-generar');
+    const descargar = document.getElementById('btn-descargar');
+    btn.disabled = false;
+    estado.textContent = 'Listo para generar.';
+
+    window.generarGif = function () {
+        return new Promise((ok) => {
+            generando = true;
+            btn.disabled = true;
+            estado.textContent = 'Grabando fotogramas…';
+            const gif = new GIF({ workers: 2, quality: 6, width: SALIDA_ANCHO, height: SALIDA_ALTO, workerScript: urlWorker, repeat: 0 });
+            for (let i = 0; i < FOTOGRAMAS; i++) {
+                avanzarMuneco(RETARDO);
+                dibujar(i / FOTOGRAMAS);
+                gif.addFrame(ctx, { copy: true, delay: RETARDO });
+            }
+            gif.on('progress', (p) => estado.textContent = 'Codificando GIF… ' + Math.round(p * 100) + '%');
+            gif.on('finished', (blob) => {
+                descargar.href = URL.createObjectURL(blob);
+                descargar.hidden = false;
+                estado.textContent = 'GIF listo: ' + Math.round(blob.size / 1024) + ' KB';
+                btn.disabled = false;
+                generando = false;
+                window.ultimoGif = blob;
+                ok(blob);
+            });
+            gif.render();
+        });
+    };
+    btn.addEventListener('click', () => window.generarGif());
+})();
+</script>
+</body>
+</html>

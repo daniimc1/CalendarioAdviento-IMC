@@ -1,0 +1,329 @@
+/* =============================================================
+   PANEL DE ADMINISTRACIÓN (vistas/vista_admin.php)
+   Reutiliza de calendario.css la cabecera de cristal, .btn-salir y el logo.
+   Aquí: fondo, tarjetas KPI, tarjetas blancas, tablas, badges y filtros.
+   ============================================================= */
+
+.layout-admin {
+    --ambar: #e8a400;
+    --verde: #1f9d55;
+    --morado: #5b3f8f;
+    --borde-suave: #ece6f6;
+
+    background: var(--fondo-magico);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 28px 20px 60px;
+}
+
+/* Los canvas (bokeh y nieve) quedan detrás del contenido */
+.layout-admin .capa-canvas { z-index: 0; }
+
+.header-admin {
+    margin-bottom: 26px;
+}
+
+.btn-volver {
+    color: var(--imc-azul);
+    border-color: #cfe0f3;
+}
+
+.btn-volver:hover { background: #eef5fd; }
+
+.admin-contenido {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ---------- BLOQUE 1: TARJETAS KPI ---------- */
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 20px 22px;
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 20px;
+    border: 2px solid transparent;
+    box-shadow: 0 12px 28px rgba(60, 30, 110, 0.14);
+}
+
+.kpi-icono  { font-size: 1.5rem; line-height: 1; margin-bottom: 6px; }
+.kpi-valor  { font-size: 2.2rem; font-weight: 800; line-height: 1.05; color: var(--imc-azul); }
+.kpi-titulo { font-weight: 700; color: var(--texto-oscuro); }
+.kpi-nota   { font-size: 0.8rem; color: var(--texto-gris); }
+
+/* Pendientes de abrir > 0: ámbar para que salte a la vista */
+.kpi-aviso {
+    background: #fff8e6;
+    border-color: #ffd36b;
+}
+.kpi-aviso .kpi-valor { color: var(--ambar); }
+
+/* ---------- TARJETAS BLANCAS (bloques 2 y 3) ---------- */
+.tarjeta {
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 22px;
+    padding: 22px 24px;
+    box-shadow: 0 14px 34px rgba(60, 30, 110, 0.15);
+}
+
+.tarjeta-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tarjeta-cabecera h2 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--imc-azul);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contador {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--morado);
+    background: #f1ebfb;
+    padding: 2px 10px;
+    border-radius: 999px;
+}
+
+/* ---------- FILTROS (chips) Y BUSCADOR ---------- */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filtro {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--borde-suave);
+    background: #faf8fd;
+    color: var(--morado);
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filtro:hover  { background: #f1ebfb; }
+.filtro.activo { background: var(--imc-azul); border-color: var(--imc-azul); color: #fff; }
+
+.barra-busqueda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.buscador {
+    flex: 1 1 280px;
+    min-width: 0;   /* En móviles muy estrechos se encoge en vez de salirse de la tarjeta */
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--borde-suave);
+    background: #faf8fd;
+    font-size: 0.9rem;
+}
+
+.buscador:focus {
+    outline: none;
+    border-color: var(--imc-azul);
+    box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.15);
+}
+
+.btn-primario-admin {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff4a5e, var(--imc-rojo));
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(227, 0, 27, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.btn-primario-admin:hover { transform: translateY(-2px); }
+
+/* ---------- TABLAS ---------- */
+/* El contenedor hace scroll horizontal en móvil sin romper el ancho de la página */
+.tabla-scroll {
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--borde-suave);
+}
+
+.tabla-admin {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.tabla-admin th {
+    position: sticky;
+    top: 0;
+    background: #f6f2fc;
+    color: var(--morado);
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    white-space: nowrap;
+}
+
+.tabla-admin td {
+    padding: 10px 14px;
+    border-top: 1px solid var(--borde-suave);
+    vertical-align: middle;
+}
+
+.tabla-admin tbody tr:hover { background: #fcfaff; }
+
+.fila-hoy { background: #fffbea; }
+.fila-vacia td { text-align: center; color: var(--texto-gris); padding: 24px; }
+
+.celda-dia,
+.celda-apertura { white-space: nowrap; font-weight: 600; }
+
+.correo {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--texto-gris);
+}
+
+.texto-suave { color: #b5adc6; }
+
+.premio-celda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 180px;
+}
+
+.miniatura {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    object-fit: contain;
+    border-radius: 10px;
+    background: radial-gradient(circle at 60% 45%, #ffffff 0%, #f4efe6 100%);
+    border: 1px solid var(--borde-suave);
+}
+
+.miniatura-vacia {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* ---------- BADGES ---------- */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-abierto     { background: #e3f6ea; color: var(--verde); }
+.badge-pendiente   { background: #fff1cc; color: #a36a00; }
+.badge-sin_ganador { background: #f1eef6; color: #7d7391; }
+.badge-proximo     { background: #e6f0fb; color: var(--imc-azul); }
+.badge-finde       { background: #f3f3f3; color: #9a9a9a; }
+.badge-hoy         { background: var(--imc-rojo); color: #fff; margin-left: 4px; }
+.badge-tu          { background: #f1ebfb; color: var(--morado); margin-left: 4px; }
+/* Estado de cada empleado (columna "Estado" del bloque 3) */
+.badge-emp-participa     { background: #e3f6ea; color: var(--verde); }
+.badge-emp-sin_registrar { background: #f1eef6; color: #7d7391; }
+.badge-emp-excluido      { background: #fde6e9; color: var(--imc-rojo); }
+.badge-rol-admin   { background: #fde6e9; color: var(--imc-rojo); }
+.badge-rol-empleado { background: #eef2f7; color: #4f5b6b; }
+
+/* ---------- BOTONES DE ACCIÓN POR FILA ---------- */
+.col-acciones { white-space: nowrap; text-align: right; }
+
+.btn-accion {
+    padding: 5px 11px;
+    margin-left: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--borde-suave);
+    background: #fff;
+    color: var(--morado);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-accion:hover:not(:disabled) { background: #f1ebfb; }
+.btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------- MODAL DE ALTA (SweetAlert2) ---------- */
+.form-alta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.form-alta label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--morado);
+}
+
+.form-alta .swal2-input {
+    display: block;
+    width: 100%;
+    margin: 4px 0 6px;
+    font-size: 0.95rem;
+}
+
+.form-alta-nota {
+    font-size: 0.78rem;
+    color: var(--texto-gris);
+}
+
+/* ---------- RESPONSIVE ---------- */
+/* Tablet: el panel no tiene guirnaldas en las esquinas, así que su cabecera
+   recupera todo el ancho (calendario.css la estrecha para esquivarlas) */
+@media (max-width: 1024px) {
+    .header-admin { max-width: 1000px; }
+    .btn-volver { white-space: nowrap; }
+}
+
+@media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .layout-admin { padding-top: 20px; }
+}
+
+@media (max-width: 520px) {
+    .layout-admin { padding: 16px 12px 40px; }
+    .kpis { gap: 12px; }
+    .kpi { padding: 16px; }
+    .kpi-valor { font-size: 1.8rem; }
+    .tarjeta { padding: 18px 14px; }
+}
