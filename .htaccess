@@ -1,0 +1,23 @@
+# =============================================================
+# CALENDARIO DE ADVIENTO - IMC TOYS · Protección del acceso web
+# Las carpetas bd/, sql/, includes/ y correo/ tienen además su propio
+# .htaccess con "Require all denied" (funciona aunque se suban sueltas).
+# =============================================================
+
+# Sin listado de carpetas
+Options -Indexes
+
+# Carpetas internas y de control de versiones: sin acceso (403/404)
+RedirectMatch 404 (?i)/(bd|sql|includes|correo|\.git|\.claude)(/|$)
+
+# Archivos que nunca se sirven: volcados SQL, logs, correos generados,
+# plantillas de configuración, archivos ocultos (.htaccess, .gitignore...)
+<FilesMatch "(?i)(\.(sql|log|eml|md|bak|ini)$|\.ejemplo\.php$|^\.)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

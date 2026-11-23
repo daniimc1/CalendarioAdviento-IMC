@@ -24,9 +24,9 @@ if (PHP_SAPI !== 'cli') {
 // DATOS DEL ENVÍO: si se dejan vacíos, se quedan los [marcadores]
 // ---------------------------------------------------------
 $para    = '';                                         // Destinatario, ej. 'cliente@empresa.com'
-$asunto  = '¡Feliz Navidad de parte de IMC Toys! 🎄';
+$asunto  = 'Felices fiestas de parte de IMC Toys';
 $datos = [
-    '[Nombre de la empresa]' => '',                    // Empresa destinataria
+    '[nombre del cliente]'   => '',                    // Cliente destinatario
     '[Nombre y apellidos]'   => '',                    // Firma
     '[Cargo]'                => '',
     '[correo@imc.es]'        => '',

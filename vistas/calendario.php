@@ -181,7 +181,7 @@ $coloresLuces = ['red', 'yellow', 'blue', 'pink', 'green'];
         <!-- Centro: título y bienvenida -->
         <div class="header-centro">
             <h1>Calendario de Adviento <span class="sin-corte">IMC Toys</span></h1>
-            <p>Hola, <strong><?= htmlspecialchars($nombreCompleto) ?></strong> — Abre tu sorpresa diaria a partir de las 12:00h</p>
+            <p>Hola, <strong><?= htmlspecialchars($nombreCompleto) ?></strong> — Abre tu sorpresa diaria a partir de las <?= HORA_APERTURA . ':00h' ?></p>
         </div>
 
         <!-- Derecha: cerrar sesión + logo -->
@@ -263,14 +263,14 @@ $coloresLuces = ['red', 'yellow', 'blue', 'pink', 'green'];
                         $mensaje = '';
                     } else {
                         $estado = 'casilla-espera-hora';
-                        $etiqueta = 'A las 12:00h';
+                        $etiqueta = 'A las ' . HORA_APERTURA . ':00h';
                         $tieneLazo = true;
-                        $mensaje = 'La sorpresa de hoy se desbloquea a las 12:00h. ¡Ya queda poco!';
+                        $mensaje = 'La sorpresa de hoy se desbloquea a las ' . HORA_APERTURA . ':00h. ¡Ya queda poco!';
                     }
                 } elseif ($fechaCasilla > $hoy) {
                     $estado = 'casilla-futura';
                     $etiqueta = $esDiaCero ? '¡Empezamos!' : 'Próximamente';
-                    $mensaje = 'Esta casilla se abrirá el ' . ($esDiaCero ? '30 de noviembre' : "$dia de diciembre") . ' a partir de las 12:00h.';
+                    $mensaje = 'Esta casilla se abrirá el ' . ($esDiaCero ? '30 de noviembre' : "$dia de diciembre") . ' a partir de las ' . HORA_APERTURA . ':00h.';
                     // Lazo visual en los viernes o el día 24 como pista de premio top
                     if ($diaSemana === 5 || $dia === 24) {
                         $tieneLazo = true;

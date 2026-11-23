@@ -85,45 +85,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputPin = document.getElementById('pin_admin'); // Solo existe en login.php
     if (!inputPin) return; // En registro.php termina aquí
 
-    formulario.addEventListener('submit', async (evento) => {
-        evento.preventDefault(); // Paramos el envío para preguntar el rol antes
+    formulario.addEventListener('submit', (evento) => {
+        if (!validarCorreo(true)) evento.preventDefault();
+    });
 
-        if (!validarCorreo(true)) return;
+    // El servidor (login.proc.php) ha visto que el correo es de un admin y falta el PIN:
+    // login.php marca el formulario con data-pedir-pin y aquí se pide antes de reenviarlo.
+    // (Ya no se pregunta el rol a ningún endpoint público: no se puede averiguar
+    //  qué correos son de administrador sin pasar por el login completo.)
+    if (formulario.dataset.pedirPin !== '1') return;
 
-        try {
-            // Preguntamos al servidor si el correo es de un administrador
-            const respuesta = await fetch('../proc/verificar_rol.proc.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ correo: inputCorreo.value.trim() })
-            });
-            const datos = await respuesta.json();
+    // Sin SweetAlert2 (CDN caído) no hay ventana del PIN: el admin tendrá que recargar
+    if (typeof Swal === 'undefined') return;
 
-            if (datos.es_admin) {
-                const { value: pin } = await Swal.fire({
-                    title: 'Acceso de Administrador',
-                    text: 'Introduce tu PIN de seguridad para acceder al panel',
-                    input: 'password',
-                    inputPlaceholder: '••••',
-                    inputAttributes: {
-                        maxlength: '10',
-                        autocapitalize: 'off',
-                        autocorrect: 'off',
-                        style: 'text-align: center; letter-spacing: 6px; font-size: 1.4rem;'
-                    },
-                    confirmButtonText: 'Verificar e Ingresar',
-                    confirmButtonColor: '#E3001B',
-                    showCancelButton: true,
-                    cancelButtonText: 'Cancelar'
-                });
-
-                if (!pin) return;      // Canceló: no enviamos nada
-                inputPin.value = pin;  // Rellenamos el input hidden de login.php
-            }
-        } catch {
-            // Si falla el fetch enviamos igualmente: PHP volverá a comprobarlo todo
-        }
-
-        formulario.submit();
+    Swal.fire({
+        title: 'Acceso de Administrador',
+        text: 'Introduce tu PIN de seguridad para acceder al panel',
+        input: 'password',
+        inputPlaceholder: '••••',
+        inputAttributes: {
+            maxlength: '10',
+            autocapitalize: 'off',
+            autocorrect: 'off',
+            style: 'text-align: center; letter-spacing: 6px; font-size: 1.4rem;'
+        },
+        confirmButtonText: 'Verificar e Ingresar',
+        confirmButtonColor: '#E3001B',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar'
+    }).then(({ value: pin }) => {
+        if (!pin) return;      // Canceló: no enviamos nada
+        inputPin.value = pin;  // Rellenamos el input hidden de login.php
+        formulario.submit();   // submit() no dispara el evento: no se vuelve a validar
     });
 });

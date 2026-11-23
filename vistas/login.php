@@ -28,6 +28,10 @@ if (isset($_SESSION['correo_recuperado'])) {
 }
 
 $recordarMarcado = isset($_COOKIE['correo_recordado']);
+
+// El correo es de un admin y falta el PIN: script.js abre la ventana del PIN al cargar
+$pedirPin = !empty($_SESSION['pedir_pin']);
+unset($_SESSION['pedir_pin']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -83,7 +87,7 @@ $recordarMarcado = isset($_COOKIE['correo_recordado']);
             <img src="../img/dumpling_navideno.png" alt="Dumpling Navideño" class="figura figura-4">
         </div>
 
-        <form action="../proc/login.proc.php" method="POST" class="caja-login">
+        <form action="../proc/login.proc.php" method="POST" class="caja-login"<?php if ($pedirPin) echo ' data-pedir-pin="1"'; ?>>
             <input type="hidden" name="pin_admin" id="pin_admin" value="">
             <h1 class="titulo-login">Calendario de Adviento</h1>
             <p class="subtitulo-login">Accede con tu correo corporativo</p>

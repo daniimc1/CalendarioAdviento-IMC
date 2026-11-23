@@ -58,8 +58,16 @@ try {
     }
 
     // 2. Control de seguridad exclusivo para Administradores
+    //    Primer envío sin PIN: se vuelve al login pidiendo el PIN (sin error).
+    //    Así ningún endpoint público responde "este correo es admin" sin pasar por el login.
     if ($empleado['rol'] === 'admin') {
-        if (empty($pinAdmin) || !password_verify($pinAdmin, $empleado['pin'])) {
+        if ($pinAdmin === '') {
+            $_SESSION['pedir_pin'] = true;
+            $_SESSION['correo_recuperado'] = $correo;
+            header('Location: ../vistas/login.php');
+            exit();
+        }
+        if (!password_verify($pinAdmin, $empleado['pin'] ?? '')) {
             $_SESSION['errores'] = "PIN de administrador incorrecto o no facilitado.";
             $_SESSION['correo_recuperado'] = $correo;
             header('Location: ../vistas/login.php');

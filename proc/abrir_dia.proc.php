@@ -93,7 +93,7 @@ try {
         }
         if ((int) date('H') < HORA_APERTURA) {
             $conn->rollBack();
-            responder(['ok' => false, 'mensaje' => 'La sorpresa de hoy se desbloquea a las 12:00h. ¡Ya queda poco!']);
+            responder(['ok' => false, 'mensaje' => 'La sorpresa de hoy se desbloquea a las ' . HORA_APERTURA . ':00h. ¡Ya queda poco!']);
         }
     }
 

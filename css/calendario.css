@@ -277,7 +277,9 @@
     z-index: 10;
     flex: 1;
     min-height: 0;
-    padding-bottom: 9vh;          /* Deja visible el manto de nieve del suelo */
+    /* Deja visible el manto de nieve del suelo y nunca menos de 96px: el toast inferior
+       (bottom 28px + ~45px de alto) no tapa la etiqueta de la última fila (casilla 24) */
+    padding-bottom: max(9vh, 96px);
     container-type: size;
 }
 

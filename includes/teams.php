@@ -5,8 +5,25 @@
    así la URL, el interruptor y el formato de la tarjeta están en un solo sitio.
    ============================================================= */
 
-require_once __DIR__ . '/teams_config.php';   // TEAMS_WEBHOOK_URL (privado, fuera de git)
+// TEAMS_WEBHOOK_URL (privado, fuera de git). Si falta el archivo en el servidor, el calendario
+// sigue funcionando: solo dejan de salir los avisos y queda anotado en el log de errores de PHP.
+if (file_exists(__DIR__ . '/teams_config.php')) {
+    require_once __DIR__ . '/teams_config.php';
+}
 define('ACTIVAR_WEBHOOK_TEAMS', true);    // PRODUCCIÓN: avisos activos (false solo para pruebas locales)
+
+// Verificación del certificado HTTPS de Power Automate:
+//  - Por defecto, ACTIVADA.
+//  - Solo se desactiva en Windows sin lista de certificados configurada (WAMP trae
+//    curl.cainfo vacío en php.ini y la conexión HTTPS fallaría).
+//  - Se puede forzar con define('TEAMS_SSL_VERIFICAR', true|false) en teams_config.php.
+function verificarSslTeams(): bool {
+    if (defined('TEAMS_SSL_VERIFICAR')) {
+        return (bool) TEAMS_SSL_VERIFICAR;
+    }
+    $hayListaCertificados = ini_get('curl.cainfo') !== '' || ini_get('openssl.cafile') !== '';
+    return PHP_OS_FAMILY !== 'Windows' || $hayListaCertificados;
+}
 
 // "10 de diciembre" (el día 0 es el 30 de noviembre)
 function textoDia(int $dia): string {
@@ -19,6 +36,9 @@ function textoDia(int $dia): string {
 function enviarAvisoTeams(string $titulo, array $datos): array {
     if (!ACTIVAR_WEBHOOK_TEAMS) {
         return ['enviado' => false, 'motivo' => 'ACTIVAR_WEBHOOK_TEAMS = false'];
+    }
+    if (!defined('TEAMS_WEBHOOK_URL') || TEAMS_WEBHOOK_URL === '' || TEAMS_WEBHOOK_URL === 'URL_DEL_FLUJO_DE_POWER_AUTOMATE') {
+        return ['enviado' => false, 'motivo' => 'Falta includes/teams_config.php o no tiene la URL real del flujo'];
     }
     if (!function_exists('curl_init')) {
         return ['enviado' => false, 'motivo' => 'La extensión cURL de PHP no está activada'];
@@ -55,10 +75,9 @@ function enviarAvisoTeams(string $titulo, array $datos): array {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 3,    // Máx. 3 s para conectar
             CURLOPT_TIMEOUT        => 4,    // Máx. 4 s en total
-            // WAMP en Windows no trae lista de certificados (curl.cainfo está vacío en php.ini)
-            // y la conexión HTTPS falla, así que se desactiva la verificación SSL.
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
+            // Verificación SSL activada salvo en WAMP sin certificados (ver verificarSslTeams)
+            CURLOPT_SSL_VERIFYPEER => verificarSslTeams(),
+            CURLOPT_SSL_VERIFYHOST => verificarSslTeams() ? 2 : 0,
         ]);
         $cuerpo    = curl_exec($ch);
         $codigo    = curl_getinfo($ch, CURLINFO_HTTP_CODE);   // 202 = Power Automate lo ha aceptado

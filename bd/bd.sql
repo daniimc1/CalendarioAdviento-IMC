@@ -82,7 +82,12 @@ CREATE TABLE IF NOT EXISTS participaciones (
     UNIQUE (empleado_id, numero_dia)
 ) ENGINE=InnoDB;
 
-UPDATE empleados SET pin = '$2y$10$pd6C7aLbyBWMmy6rkAUqrOpCFddp5A67ErzCFZUTMJlqQkWKQbWPS' WHERE rol = 'admin';
+-- ADMINISTRADORES: el rol y el PIN se asignan DESPUÉS de importar el CSV de empleados
+-- (aquí la tabla aún está vacía). Generar el hash en el servidor:
+--     php -r "echo password_hash('PIN_ELEGIDO', PASSWORD_DEFAULT), PHP_EOL;"
+-- y ejecutar (igual que el paso 5 de sql/deploy_30nov.sql):
+-- UPDATE empleados SET rol = 'admin', pin = 'HASH_GENERADO'
+-- WHERE email IN ('admin1@imctoys.com', 'admin2@imctoys.com');
 
 
 INSERT INTO premios (id, nombre, descripcion, imagen, unidades_totales, unidades_disponibles) VALUES
